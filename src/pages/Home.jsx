@@ -1,26 +1,25 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import ContainerMusic from '../components/layout/ContainerMusic'
 import { SearchIcon } from '../components/shared/icons'
 import { axiosMusic } from '../config/axios.config'
 import { useUserInfo } from '../store/userInfo'
+import TrackDefaulCard from '../components/shared/TrackDefaulCard'
+import ListTrackDefaul from '../components/shared/ListTrackDefaul'
 
 const Home = () => {
+  const [tracksRecomendations, setTracksRecomendations] = useState([])
 
   const {token} = useUserInfo(state => state.user)
 
   useEffect(() => {
-    const config = {
-      headers: {
-        Authorization: `JWT ${token}`
-      },
-    };
+ 
     axiosMusic
-      .get("/api/tracks/recommendations?seed_genres=reggaeton, salsa", config)
-      .then(({data}) => console.log(data))
+      .get("/api/tracks/recommendations?seed_genres=reggaeton, salsa")
+      .then(({data}) => setTracksRecomendations(data.tracks))
       .catch((err) => console.log(err))
   },[])
 
-  useEffect(() => {
+/*   useEffect(() => {
     const config = {
       headers: {
         Authorization: `JWT ${token}`
@@ -33,7 +32,7 @@ const Home = () => {
     .get("/api/genres", config)
     .then(({data}) => console.log(data))
     .catch((err) => console.log(err))
-  }, [])
+  }, []) */
   return (
       <ContainerMusic>
         <header className='text-lg'>
@@ -50,6 +49,8 @@ const Home = () => {
             </select>
           </form>
         </header>
+
+      <ListTrackDefaul tracks = {tracksRecomendations} />
       </ContainerMusic>  
   )
 }
