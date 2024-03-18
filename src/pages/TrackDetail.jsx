@@ -1,6 +1,10 @@
+import ContainerMusic from "../components/layout/ContainerMusic"
+
 const TrackDetail = () => {
   return (
-    <div>TrackDetail</div>
+    <ContainerMusic>
+        
+    </ContainerMusic>
   )
 }
 export default TrackDetail

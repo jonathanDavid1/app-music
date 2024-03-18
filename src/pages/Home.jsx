@@ -2,14 +2,25 @@ import React, { useEffect, useState } from 'react'
 import ContainerMusic from '../components/layout/ContainerMusic'
 import { SearchIcon } from '../components/shared/icons'
 import { axiosMusic } from '../config/axios.config'
-import { useUserInfo } from '../store/userInfo'
-import TrackDefaulCard from '../components/shared/TrackDefaulCard'
 import ListTrackDefaul from '../components/shared/ListTrackDefaul'
 
-const Home = () => {
-  const [tracksRecomendations, setTracksRecomendations] = useState([])
 
-  const {token} = useUserInfo(state => state.user)
+const Home = () => {
+  const [searchResults, setSearchResults] = useState([]);
+  const [tracksRecomendations, setTracksRecomendations] = useState([]);
+
+  const handleSubmit = (e) => {
+      e.preventDefault();
+      const query = e.target["home-querySearch"].value;
+      if(query === "") setSearchResults([])
+      axiosMusic 
+        .get(`/api/tracks?limit=10&q=${query}`)
+        .then(({data}) => setSearchResults(data.tracks.items))
+        .catch((err) => console.log(err))
+  }
+
+  const tracksToShow = searchResults.length === 0 ? tracksRecomendations: searchResults;
+
 
   useEffect(() => {
  
@@ -36,13 +47,18 @@ const Home = () => {
   return (
       <ContainerMusic>
         <header className='text-lg'>
-          <form className='bg-purple-dark p-2 rounded-md flex gap-2 items-center'>
+          <form
+          onSubmit={handleSubmit} 
+          className='bg-purple-dark p-2 rounded-md flex gap-2 items-center'>
             <button>
               <SearchIcon/>
               </button>
-            <input className='bg-transparent outline-none flex-1' 
+            <input
+            id='home-querySearch'
+            className='bg-transparent outline-none flex-1' 
             type="text"
             size={10}
+            autoComplete='off'
             placeholder='Buscar' />
             <select className='bg-transparent outline-none'>
               <option value="10">10</option>
@@ -50,7 +66,7 @@ const Home = () => {
           </form>
         </header>
 
-      <ListTrackDefaul tracks = {tracksRecomendations} />
+      <ListTrackDefaul tracks = {tracksToShow} />
       </ContainerMusic>  
   )
 }
