@@ -3,12 +3,14 @@ import { LogoutIcon, MinimalPlayIcon, PlaylistIcon } from "../shared/icons";
 import { useUserInfo } from "../../store/userInfo";
 import { useState } from "react";
 import PopUpPlaylist from "../playlist/PopUpPlaylist";
+import { usePlaylistCart } from "../../store/playlistCart";
 
 
 const PrincipalLayout = ({children}) => {
   const logout = useUserInfo(state => state.logout)
   const [isShowAuthOptions, setIsShowAuthOptions] = useState(false)
   const [isShowCurrentPlaylist, setIsShowCurrentPlaylist] = useState(false)
+  const tracks = usePlaylistCart(store => store.tracks)
   return (
     <section className="min-h-screen font-urbanist bg-purple-bg text-white bg-[url(/images/bg-auth-mobile.png)] bg-right-bottom bg-no-repeat sm:bg-[url(/images/bg-auth-desktop.png)] overflow-hidden">
         <header className="flex p-2 justify-between items-center bg-purple-dark sm:text-lg relative">
@@ -18,7 +20,7 @@ const PrincipalLayout = ({children}) => {
             <button onClick={() => setIsShowAuthOptions(!isShowAuthOptions)} className="hover:bg-bg-purple-light  ">Mi cuenta</button>
             <button onClick={()=> setIsShowCurrentPlaylist(!isShowCurrentPlaylist)} className="flex gap-3 sm:gap-2 items-center hover:bg-bg-purple-light">
               <PlaylistIcon/>
-              <span className="hidden sm:inline">Grabando </span>1
+              <span className="hidden sm:inline">Grabando </span>{tracks.length}
               </button>
           </section>
         {/* Popup Auth */}

@@ -2,7 +2,7 @@ import TrackPlaylistCart from "./TrackPlaylistCart";
 
 const ListCartPlaylist = ({tracks}) => {
   return (
-    <section>
+    <section className="max-h-[265px] overflow-y-auto">
       {
         tracks.map((track) => <TrackPlaylistCart key={track.id} track={track}/>)
       }

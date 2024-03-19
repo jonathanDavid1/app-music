@@ -4,13 +4,24 @@ import "./PopUpPlaylist.css"
 import { useState } from 'react';
 import ListCartPlaylist from './ListCartPlaylist';
 import { usePlaylistCart } from '../../store/playlistCart';
+import { axiosMusic } from '../../config/axios.config';
 
 const PopUpPlaylist = ({isShowCurrentPlaylist}) => {
     const [isShowSideA, setIsShowSideA] = useState(true)
     const tracks = usePlaylistCart(store => store.tracks)
+    const clearTracks = usePlaylistCart(store => store.clearTracks)
 
     const handleSubmit = (e) => {
       e.preventDefault()
+    const data = Object.fromEntries(new FormData(e.target))
+    data.tracks = tracks
+    axiosMusic
+    .post("/api/playlists",data)
+    .then(() => {
+        e.target.reset()
+        clearTracks()
+    })
+    .catch((err) => console.log(err))
     }
 
   return (
@@ -20,10 +31,12 @@ const PopUpPlaylist = ({isShowCurrentPlaylist}) => {
         <div className='relative front'>
             <img className='mx-auto' src="/images/cassette.png" alt="" />
             <div className='flex items-center gap-2 bg-white absolute top-4 left-5 rounded-md px-2 w-[195px]'>
-                <input className='text-black bg-transparent outline-none p-1 text-sm flex-1' 
+                <input              
+                className='text-black bg-transparent outline-none p-1 text-sm flex-1' 
                 type="text"
                 size={10}
-                placeholder='Título' />
+                placeholder='Título'
+                name='title' />
                 <label htmlFor="">
                 <PencilIcon/>
                 </label>
@@ -36,13 +49,16 @@ const PopUpPlaylist = ({isShowCurrentPlaylist}) => {
                       <input className='text-black bg-transparent outline-none p-1 text-sm flex-1'
                           type="text"
                           size={10}
-                          placeholder='Para' />
+                          placeholder='Para'
+                          name='to' />
                       <label htmlFor="">
                           <PencilIcon />
                       </label>
                   </div>
                   <div className='flex items-center gap-2 bg-white absolute top-12 left-5 rounded-md px-2 w-[197px]'>
-                      <textarea className='text-black bg-transparent outline-none p-1 text-sm flex-1 resize-none'
+                      <textarea 
+                      name='message'
+                      className='text-black bg-transparent outline-none p-1 text-sm flex-1 resize-none'
                       rows={4}
                           type="text"
                           size={10}
