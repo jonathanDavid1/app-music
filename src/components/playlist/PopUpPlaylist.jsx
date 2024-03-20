@@ -25,7 +25,7 @@ const PopUpPlaylist = ({isShowCurrentPlaylist}) => {
     }
 
   return (
-    <article className={`absolute w-[271.6px] -bottom-4 translate-y-full grid bg-bg-purple-light p-4 gap-2 rounded-lg border border-yellow-border transition-[right] ${isShowCurrentPlaylist ? "right-4": "-right-full"}`}>
+    <article className={`absolute w-[271.6px] z-10 -bottom-4 translate-y-full grid bg-bg-purple-light p-4 gap-2 rounded-lg border border-yellow-border transition-[right] ${isShowCurrentPlaylist ? "right-4": "-right-full"}`}>
     <form onSubmit={handleSubmit} id='formPlaylistCart' className={`relative card  ${isShowSideA ? "sideA": "sideB"}`}>
         {/* Parte frontal (Lado A) */}
         <div className='relative front'>
@@ -36,7 +36,9 @@ const PopUpPlaylist = ({isShowCurrentPlaylist}) => {
                 type="text"
                 size={10}
                 placeholder='Título'
-                name='title' />
+                name='title'
+                required
+                onFocus={() => setIsShowSideA(true)} />
                 <label htmlFor="">
                 <PencilIcon/>
                 </label>
@@ -50,7 +52,10 @@ const PopUpPlaylist = ({isShowCurrentPlaylist}) => {
                           type="text"
                           size={10}
                           placeholder='Para'
-                          name='to' />
+                          name='to' 
+                          required
+                          onFocus={() => setIsShowSideA(false)}
+                          />
                       <label htmlFor="">
                           <PencilIcon />
                       </label>
@@ -62,7 +67,10 @@ const PopUpPlaylist = ({isShowCurrentPlaylist}) => {
                       rows={4}
                           type="text"
                           size={10}
-                          placeholder='Dedicatoria' />
+                          placeholder='Dedicatoria'
+                          required
+                          onFocus={() => setIsShowSideA(false)}
+                           />
                     
                   </div>
               </div>
