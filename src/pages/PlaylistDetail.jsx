@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ContainerMusic from '../components/layout/ContainerMusic';
 import { PencilIcon } from '../components/shared/icons';
 import { Link, useParams } from 'react-router-dom';
@@ -6,15 +6,19 @@ import { axiosMusic } from '../config/axios.config';
 import ListPlaylistDetail from '../components/playlistDetail/ListPlaylistDetail';
 const PlaylistDetail = () => {
 
-  const [isShowSideA, setIsShowSideA] = useState(false);
+  const [isShowSideA, setIsShowSideA] = useState(true);
   const [playlistInfo, setPlaylistInfo] = useState(null)
 
   const { id } = useParams()
+  const formRef = useRef(null)
 
   const handleDeleteTrackByPlaylist = (idTrackToDelete) => {
     axiosMusic
     .delete(`/api/playlists/${playlistInfo.id}/tracks/${idTrackToDelete}`)
-    .then((data) => console.log(data))
+    .then((data) => {
+        const newTracks = playlistInfo.tracks.filter(track => track.id !== idTrackToDelete)
+        setPlaylistInfo({...playlistInfo, tracks: newTracks})
+    })
     .catch((err) => console.log(err))
   }
 
@@ -26,11 +30,22 @@ const PlaylistDetail = () => {
   
 
   }, [])
+  useEffect(() => {
+    if(playlistInfo){
+        formRef.current.playlistDetail_title.value = playlistInfo.title
+        formRef.current.playlistDetail_to.value = playlistInfo.to
+        formRef.current.playlistDetail_title.message = playlistInfo.message
+
+    }
+  }, [playlistInfo])
+  
   
   return (
     <ContainerMusic>
-      <Link>{"<"} Atras</Link>  
-    <form id='formPlaylistCart' className={`relative w-[238px] mx-auto card  ${isShowSideA ? "sideA": "sideB"}`}>
+      <Link to= {-1}>{"<"} Atras</Link>  
+    <form
+    ref={formRef} 
+    id='formPlaylistCart' className={`relative w-[238px] mx-auto card  ${isShowSideA ? "sideA": "sideB"}`}>
         {/* Parte frontal (Lado A) */}
         <div className='relative front'>
             <img className='mx-auto' src="/images/cassette.png" alt="" />
@@ -42,6 +57,7 @@ const PlaylistDetail = () => {
                 placeholder='Título'
                 name='title'
                 required
+                id='playlistDetail_title'
                 onFocus={() => setIsShowSideA(true)} />
                 <label htmlFor="">
                 <PencilIcon/>
@@ -58,6 +74,7 @@ const PlaylistDetail = () => {
                           placeholder='Para'
                           name='to' 
                           required
+                          id='playlistDetail_to'
                           onFocus={() => setIsShowSideA(false)}
                           />
                       <label htmlFor="">
@@ -73,6 +90,7 @@ const PlaylistDetail = () => {
                           size={10}
                           placeholder='Dedicatoria'
                           required
+                          id='playlistDetail_message'
                           onFocus={() => setIsShowSideA(false)}
                            />
                     
