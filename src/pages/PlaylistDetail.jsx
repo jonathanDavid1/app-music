@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ContainerMusic from '../components/layout/ContainerMusic';
-import { PencilIcon } from '../components/shared/icons';
-import { Link, useParams } from 'react-router-dom';
+import { PencilIcon, SaveIcon, ShareIcon, TrashIcon } from '../components/shared/icons';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { axiosMusic } from '../config/axios.config';
 import ListPlaylistDetail from '../components/playlistDetail/ListPlaylistDetail';
 const PlaylistDetail = () => {
@@ -11,6 +11,24 @@ const PlaylistDetail = () => {
 
   const { id } = useParams()
   const formRef = useRef(null)
+  const navigate = useNavigate()
+  
+  const handleSubmit = (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target));
+        axiosMusic
+            .patch(`/api/playlists/${id}`, data)
+            .then(({data}) => alert("Playlist actualizada correctamente"))
+            .catch((err) => console.log(err))
+
+  }
+
+  const handleDeletePlaylists = () => {
+    axiosMusic
+    .delete(`/api/playlists/${id}`)
+    .then(() => {navigate("/playlists")})
+    .catch((err) => console.log(err))
+  }
 
   const handleDeleteTrackByPlaylist = (idTrackToDelete) => {
     axiosMusic
@@ -44,6 +62,7 @@ const PlaylistDetail = () => {
     <ContainerMusic>
       <Link to= {-1}>{"<"} Atras</Link>  
     <form
+    onSubmit={handleSubmit}
     ref={formRef} 
     id='formPlaylistCart' className={`relative w-[238px] mx-auto card  ${isShowSideA ? "sideA": "sideB"}`}>
         {/* Parte frontal (Lado A) */}
@@ -63,6 +82,23 @@ const PlaylistDetail = () => {
                 <PencilIcon/>
                 </label>
             </div>
+            <Link to={`/playlists/public/${id}`} 
+            target='_blank'
+            className='absolute right-5 bottom-3 border-2 rounded-full p-[3px] hover:border-yellow-border group transition-colors'>
+                <ShareIcon/>
+            </Link>
+            <button
+            type='submit'
+            className='absolute left-4 bottom-3 border-2 rounded-full p-[3px] hover:border-yellow-border group transition-colors'>
+                <SaveIcon/>
+            </button>
+            <button
+            type='button'
+            onClick={handleDeletePlaylists}
+            className='absolute left-14 bottom-3 border-2 rounded-full p-[3px] hover:border-yellow-border group transition-colors'>
+                <TrashIcon />
+            </button>
+
         </div>
         {/* Parte trasera (lado B) */}
               <div className='absolute top-0 left-[3px] back'>
@@ -102,7 +138,9 @@ const PlaylistDetail = () => {
             isShowSideA ? "Lado B":"Lado A"
         }
     </button>
-    <ListPlaylistDetail tracks={playlistInfo?.tracks ?? []} handleDeleteTrackByPlaylist={handleDeleteTrackByPlaylist}/>
+    <ListPlaylistDetail tracks={playlistInfo?.tracks ?? []} handleDeleteTrackByPlaylist={handleDeleteTrackByPlaylist}
+    showDeleteBtn
+    />
     </ContainerMusic>
   );
 }

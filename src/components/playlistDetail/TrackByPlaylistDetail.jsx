@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { DeleteIcon } from "../shared/icons";
+import { DeleteIcon, IconPlay } from "../shared/icons";
 
-const TrackByPlaylistDetail = ({track, handleDeleteTrackByPlaylist}) => {
+const TrackByPlaylistDetail = ({track, handleDeleteTrackByPlaylist, showDeleteBtn, showPlayBtn}) => {
   return (
     <article key={track.id} className="flex items-center gap-2 hover:bg-white/30 p-1 rounded-md pr-2 transition-colors">
         <header className="rounded-md overflow-hidden w-[45px]">
@@ -13,9 +13,21 @@ const TrackByPlaylistDetail = ({track, handleDeleteTrackByPlaylist}) => {
         </section>
 
         <section className="flex items-center gap-2">
-            <button onClick={() => handleDeleteTrackByPlaylist(track.id)} className='group'>
-                <DeleteIcon />
-            </button>
+              {
+                  showDeleteBtn && (
+                      <button onClick={() => handleDeleteTrackByPlaylist(track.id)} className='group'>
+                          <DeleteIcon />
+                      </button>
+                  )
+              }
+              {
+                  showPlayBtn && (
+                      <button className='group'>
+                          <IconPlay />
+                      </button>
+                  )
+              }
+
 
         </section>
     </article>
