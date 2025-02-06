@@ -3,7 +3,7 @@
 import axios from "axios";
 
 const axiosMusic = axios.create({
-    baseURL: "https://music-api-spotify.2.us-1.fl0.io"
+    baseURL: "https://api-music-3oaj.onrender.com"
 })
 
 axiosMusic.interceptors.request.use((config) => {
